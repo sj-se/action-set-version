@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         SHORT_SHA=$(echo ${{ github.sha }} | head -c 8)
-        DATETIME=$(date -u +%Y%m%d%H%M%S)
+        DATETIME=$(date -u +%Y%m%d)
         VERSION=${DATETIME}.${GITHUB_RUN_NUMBER}
         echo "::set-output name=version::${VERSION}"
         IMAGE_TAG=$(echo "${{ inputs.registry-name }}/${{ inputs.image-name }}:${VERSION}" | tr '[:upper:]' '[:lower:]')
