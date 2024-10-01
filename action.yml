@@ -1,0 +1,29 @@
+name: 'Set version'
+description: 'Set a unique version and image tag'
+inputs:
+  registry-name:
+    description: 'Container registry name'
+    required: true
+  image-name:
+    description: 'Image name'
+    required: true    
+outputs:
+  version:
+    description: "The generated version"
+    value: ${{ steps.setOutput.outputs.version }}
+  image-tag:
+    description: "The generated tag"
+    value: ${{ steps.setOutput.outputs.image-tag }}
+runs:
+  using: "composite"
+  steps:
+    - name: Set a version
+      id: setOutput
+      shell: bash
+      run: |
+        SHORT_SHA=$(echo ${{ github.sha }} | head -c 8)
+        DATETIME=$(date -u +%Y%m%d%H%M%S)
+        VERSION=${DATETIME}.${GITHUB_RUN_NUMBER}
+        echo "::set-output name=version::${VERSION}"
+        IMAGE_TAG=$(echo "${{ inputs.registry-name }}/${{ inputs.image-name }}:${VERSION}" | tr '[:upper:]' '[:lower:]')
+        echo "::set-output name=image-tag::${IMAGE_TAG}"
